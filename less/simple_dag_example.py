@@ -9,7 +9,7 @@ Test documentation
 from airflow.operators.bash import BashOperator
 
 with DAG(
-        'tutorial'  # имя дага
+        'tutorial',  # имя дага
 default_args={
 'depends_on_past': False,
 'email': ['hdbda@yandex.ru'],
