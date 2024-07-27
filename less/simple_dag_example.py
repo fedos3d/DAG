@@ -50,7 +50,7 @@ tags = ['example'],
             echo "{{ ds }}"
             echo "{{ macros.ds_add(ds, 7)}}"
         {% endfor %}
-        """
+        """ )
     # здесь используется шаблонизация через Jinja
     t3 = BashOperator(
         task_id='templated',
