@@ -20,7 +20,7 @@ default_args={
 },
 description = 'a simple tutorial DAG',
 schedule_interval = timedelta(days=1),
-start_date = datetime(2024, 25, 7),
+start_date = datetime(2024, 7, 27),
 catchup = False,
 tags = ['example'],
 ) as dag:
