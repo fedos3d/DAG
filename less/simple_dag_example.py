@@ -26,12 +26,12 @@ tags = ['example'],
 ) as dag:
     t1 = BashOperator(
         task_id='print_date',
-        bash_comand='date',
+        bash_command='date',
     )
     t2 = BashOperator(
         task_id='sleep',
         depends_on_past=False,
-        bash_comand='sleep 5',
+        bash_command='sleep 5',
         retries=3,
     )
     t1.doc_md = dedent(
@@ -55,7 +55,7 @@ tags = ['example'],
     t3 = BashOperator(
         task_id='templated',
         depends_on_past=False,
-        bash_comand=templated_command,
+        bash_command=templated_command,
     )
     # последовательность задач
     t1 >> [t2, t3]  # t2 и t3 после t1( то же самое что t2<< t1, t3<<t1)
