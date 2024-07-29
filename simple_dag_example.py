@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timedelta
 from textwrap import dedent
 
@@ -7,6 +8,7 @@ from airflow import DAG
 Test documentation
 """
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 
 with DAG(
         'tutorial',  # имя дага
@@ -57,6 +59,31 @@ tags = ['example'],
         depends_on_past=False,
         bash_command=templated_command,
     )
-    # последовательность задач
-    t1 >> [t2, t3]  # t2 и t3 после t1( то же самое что t2<< t1, t3<<t1)
 
+    def print_context(ds, **kwargs):
+        """Primer PythonOperator"""
+        # через синтаксис **kwargs можно получить словарь
+        print(kwargs)
+        print(ds)
+        return 'Whatever you return gets printed in the logs'
+
+    t4=PythonOperator(
+        task_id = 'print_the_context',
+        python_callable=print_context,
+    )
+
+    def my_sleeping_function(random_base):
+        """Заснуть на рандом_басе секунд"""
+        time.sleep(random_base)
+
+    #Генерируем таски в цикле
+    for i in range(5):
+        task = PythonOperator(
+            task_id='sleep_for_'+ str(i),
+            python_callable=my_sleeping_function,
+            #передаем в аргумент рандом_басе значение float(i)/10
+            op_kwargs={'random_base': float(i)/10},
+        )
+        t4 >> task
+    # последовательность задач
+    t1 >> [t2, t3] >> t4 # t2 и t3 после t1( то же самое что t2<< t1, t3<<t1)
