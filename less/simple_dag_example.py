@@ -7,6 +7,7 @@ from airflow import DAG
 Test documentation
 """
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 
 with DAG(
         'tutorial',  # имя дага
@@ -57,6 +58,18 @@ tags = ['example'],
         depends_on_past=False,
         bash_command=templated_command,
     )
+
+    def print_context(ds, **kwargs):
+        """Primer PythonOperator"""
+        # через синтаксис **kwargs можно получить словарь
+        print(kwargs)
+        print(ds)
+        return 'Whatever you return gets printed in the logs'
+
+    t4=PythonOperator(
+        task_id = 'print_the_context',
+        python_callable=print_context,
+    )
     # последовательность задач
-    t1 >> [t2, t3]  # t2 и t3 после t1( то же самое что t2<< t1, t3<<t1)
+    t1 >> [t2, t3] >> t4 # t2 и t3 после t1( то же самое что t2<< t1, t3<<t1)
 
